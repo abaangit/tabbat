@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <link rel="stylesheet" href="{% static 'inventory/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a> |
+            <a href="{% url 'sales_report' %}">Sales Report</a> |
+            <a href="/admin/" target="_blank">Admin Site</a>
+        </nav>
+        <hr>
+        <h1>Sales Report</h1>
+        <button onclick="window.print()">Print Report</button>
+
+        {% for date, sales in sales_by_date.items %}
+            <h2>Sales for {{ date }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity Sold</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                        <tr>
+                            <td>{{ sale.product }}</td>
+                            <td>{{ sale.quantity_sold }}</td>
+                            <td>TZS {{ sale.price }}</td>
+                            <td>TZS {{ sale.total }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total Sales: TZS {{ total_per_day|default_if_none:"0.00" }}</h3>
+            <br> <!-- Add some space between each table -->
+        {% endfor %}
+    </div>
+</body>
+</html>

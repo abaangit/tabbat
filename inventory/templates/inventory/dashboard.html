@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Shop</title>
+    <link rel="stylesheet" href="{% static 'inventory/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a> |
+            <a href="{% url 'sales_report' %}">Sales Report</a> |
+            <a href="/admin/" target="_blank">Admin Site</a>
+        </nav>
+        <hr>
+        <h1>Hardware Shop</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="product">Select Product:</label>
+            <select name="product" id="product">
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="quantity_sold">Quantity Sold:</label>
+            <input type="number" name="quantity_sold" id="quantity_sold" required><br>
+            <label for="price">Price:</label>
+            <input type="number" name="price" id="price" required><br>
+
+            <button type="submit">Submit Sale</button>
+        </form>
+
+        <h2>Products</h2>
+        <input type="text" id="searchBar" onkeyup="searchProducts()" placeholder="Search for products...">
+
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Dozens in Stock</th>
+                    <th>Packages in Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.dozen_count }}</td>
+                        <td>{{ product.package_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchProducts() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchBar");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("productsTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) { // Start at 1 to skip the header row
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }       
+            }
+        }
+    </script>
+</body>
+</html>
